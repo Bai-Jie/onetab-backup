@@ -85,11 +85,10 @@ public class BasicStorageService implements StorageService {
 
   private void retrieveItem(@Nonnull String raw, @Nonnull WebArchive.ItemBuilder builder) {
     final String[] split = raw.split(" \\| ", 2);
-    if (split.length != 2) {
-      throw new IllegalStateException("illegal item format");//TODO
-    }
     builder.setLink(split[0]);
-    builder.setTitle(split[1]);
+    if (split.length >= 2) {
+      builder.setTitle(split[1]);
+    }
   }
 
 }

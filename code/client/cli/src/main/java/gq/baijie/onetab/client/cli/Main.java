@@ -36,10 +36,15 @@ public class Main {
           } else {
             result.getResult().result().getSections().forEach(section -> {
               section.getItems()/*.stream()
+//                  .filter(item->item.getTitle() == null)
                   .filter(item->item.getTitle().contains("|"))*/
                   .forEach(item -> {
-                    System.out.print(item.getLink() + " | ");
-                    System.out.println(item.getTitle());
+                    if (item.getTitle() != null) {
+                      System.out.print(item.getLink() + " | ");
+                      System.out.println(item.getTitle());
+                    } else {
+                      System.out.println(item.getLink());
+                    }
                   });
               // add an empty line after section's items
               System.out.println();
