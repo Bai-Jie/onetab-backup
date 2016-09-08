@@ -19,12 +19,21 @@ public class WebArchive {
     this.sections = sections;
   }
 
+  public List<Section> getSections() {
+    return sections;
+  }
+
   public static class Section {
     private List<Item> items;
 
     public Section(List<Item> items) {
       this.items = items;
     }
+
+    public List<Item> getItems() {
+      return items;
+    }
+
   }
 
   public static class Item {
@@ -35,6 +44,15 @@ public class WebArchive {
       this.link = link;
       this.title = title;
     }
+
+    public String getLink() {
+      return link;
+    }
+
+    public String getTitle() {
+      return title;
+    }
+
   }
 
   public static class WebArchiveBuilder {
