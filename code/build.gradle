@@ -11,7 +11,7 @@ project(javaProjects) {
 }
 
 project(javaProjects) {
-//    group = 'gq.baijie.'
+    group = 'gq.baijie.onetab'
     version = '0.1.0'
 
     repositories {
