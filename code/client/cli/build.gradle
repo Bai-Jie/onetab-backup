@@ -1,0 +1,9 @@
+plugins {
+  id "application"
+}
+
+mainClassName = "${group}.client.cli.Main"
+
+dependencies {
+  compile project(':business')
+}
