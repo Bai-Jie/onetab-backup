@@ -1,4 +1,4 @@
-package gq.baijie.onetab.api;
+package gq.baijie.onetab;
 
 import javax.annotation.Nonnull;
 

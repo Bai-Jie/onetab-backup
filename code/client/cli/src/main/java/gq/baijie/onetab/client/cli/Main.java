@@ -6,10 +6,10 @@ import java.nio.file.Files;
 
 import javax.annotation.Nonnull;
 
-import gq.baijie.onetab.api.ProgressOrResult;
-import gq.baijie.onetab.api.Result;
-import gq.baijie.onetab.api.StorageService;
-import gq.baijie.onetab.api.WebArchive;
+import gq.baijie.onetab.ProgressOrResult;
+import gq.baijie.onetab.Result;
+import gq.baijie.onetab.StorageService;
+import gq.baijie.onetab.WebArchive;
 import gq.baijie.onetab.impl.BasicStorageService;
 
 public class Main {

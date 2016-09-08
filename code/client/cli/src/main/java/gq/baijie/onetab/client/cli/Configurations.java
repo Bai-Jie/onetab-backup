@@ -6,8 +6,8 @@ import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
 
-import gq.baijie.onetab.api.Result;
-import gq.baijie.onetab.api.Results;
+import gq.baijie.onetab.Result;
+import gq.baijie.onetab.Results;
 
 public class Configurations {
 

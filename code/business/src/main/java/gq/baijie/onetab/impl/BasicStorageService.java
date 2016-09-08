@@ -8,11 +8,11 @@ import java.io.UnsupportedEncodingException;
 
 import javax.annotation.Nonnull;
 
-import gq.baijie.onetab.api.ProgressOrResult;
-import gq.baijie.onetab.api.Result;
-import gq.baijie.onetab.api.Results;
-import gq.baijie.onetab.api.StorageService;
-import gq.baijie.onetab.api.WebArchive;
+import gq.baijie.onetab.ProgressOrResult;
+import gq.baijie.onetab.Result;
+import gq.baijie.onetab.Results;
+import gq.baijie.onetab.StorageService;
+import gq.baijie.onetab.WebArchive;
 import rx.Observable;
 
 public class BasicStorageService implements StorageService {
