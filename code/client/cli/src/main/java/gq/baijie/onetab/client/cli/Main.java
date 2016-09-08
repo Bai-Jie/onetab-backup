@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
+import javax.annotation.Nonnull;
+
 import gq.baijie.onetab.api.ProgressOrResult;
 import gq.baijie.onetab.api.Result;
 import gq.baijie.onetab.api.StorageService;
+import gq.baijie.onetab.api.WebArchive;
 import gq.baijie.onetab.impl.BasicStorageService;
 
 public class Main {
@@ -34,23 +37,31 @@ public class Main {
           if (result.getResult().failed()) {
             result.getResult().cause().printStackTrace();
           } else {
-            result.getResult().result().getSections().forEach(section -> {
-              section.getItems()/*.stream()
-//                  .filter(item->item.getTitle() == null)
-                  .filter(item->item.getTitle().contains("|"))*/
-                  .forEach(item -> {
-                    if (item.getTitle() != null) {
-                      System.out.print(item.getLink() + " | ");
-                      System.out.println(item.getTitle());
-                    } else {
-                      System.out.println(item.getLink());
-                    }
-                  });
-              // add an empty line after section's items
-              System.out.println();
-            });
+            printResult(result.getResult().result());
           }
         });
+  }
+
+  private static void printResult(@Nonnull WebArchive webArchive) {
+    if (webArchive.getSections().isEmpty()) {
+      return;
+    }
+    printSection(webArchive.getSections().get(0));
+    webArchive.getSections().stream().skip(1).forEach(section -> {
+      System.out.println();
+      printSection(section);
+    });
+  }
+
+  private static void printSection(@Nonnull WebArchive.Section section) {
+    section.getItems().forEach(item -> {
+      if (item.getTitle() != null) {
+        System.out.print(item.getLink() + " | ");
+        System.out.println(item.getTitle());
+      } else {
+        System.out.println(item.getLink());
+      }
+    });
   }
 
 }
