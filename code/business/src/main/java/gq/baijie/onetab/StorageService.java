@@ -1,16 +1,18 @@
 package gq.baijie.onetab;
 
-import java.io.InputStream;
-
 import javax.annotation.Nonnull;
 
 import rx.Observable;
 
 public interface StorageService {
 
-  public static final String TYPE_DEFAULT = "default";
+  String TYPE_DEFAULT = "default";
 
-  Observable<ProgressOrResult<WebArchive, Throwable>> retrieve(
-      @Nonnull String type, @Nonnull InputStream input);
+  @Nonnull
+  Observable<ProgressOrResult<Void, Throwable>> save(
+      @Nonnull String type, @Nonnull WebArchive webArchive);
+
+  @Nonnull
+  Observable<ProgressOrResult<WebArchive, Throwable>> retrieve(@Nonnull String type);
 
 }

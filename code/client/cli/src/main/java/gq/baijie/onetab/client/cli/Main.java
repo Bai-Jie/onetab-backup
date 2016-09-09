@@ -10,7 +10,8 @@ import gq.baijie.onetab.ProgressOrResult;
 import gq.baijie.onetab.Result;
 import gq.baijie.onetab.StorageService;
 import gq.baijie.onetab.WebArchive;
-import gq.baijie.onetab.impl.BasicStorageService;
+import gq.baijie.onetab.internal.storage.BasicStorageService;
+import gq.baijie.onetab.internal.storage.StorageModule;
 
 public class Main {
 
@@ -30,8 +31,11 @@ public class Main {
       return;
     }
 
-    final StorageService storageService = new BasicStorageService();
-    storageService.retrieve(StorageService.TYPE_DEFAULT, input)
+    final MainComponent component = DaggerMainComponent.builder()
+        .storageModule(StorageModule.from(new BasicStorageService(input)))
+        .build();
+
+    component.storageService().retrieve(StorageService.TYPE_DEFAULT)
         .filter(ProgressOrResult::isResult)
         .subscribe(result -> {
           if (result.getResult().failed()) {

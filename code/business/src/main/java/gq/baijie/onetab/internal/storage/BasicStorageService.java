@@ -1,4 +1,4 @@
-package gq.baijie.onetab.impl;
+package gq.baijie.onetab.internal.storage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,21 +11,35 @@ import javax.annotation.Nonnull;
 import gq.baijie.onetab.ProgressOrResult;
 import gq.baijie.onetab.Result;
 import gq.baijie.onetab.Results;
-import gq.baijie.onetab.StorageService;
 import gq.baijie.onetab.WebArchive;
 import rx.Observable;
 
-public class BasicStorageService implements StorageService {
+import static gq.baijie.onetab.StorageService.TYPE_DEFAULT;
+
+public class BasicStorageService implements StorageServiceSpi {
 
   private static final String DEFAULT_CHARSET = "utf-8";
 
+  @Nonnull
+  private final InputStream input;
+
+  public BasicStorageService(@Nonnull InputStream input) {
+    this.input = input;
+  }
+
+  @Nonnull
+  @Override
+  public String getType() {
+    return TYPE_DEFAULT;
+  }
 
   @Override
-  public Observable<ProgressOrResult<WebArchive, Throwable>> retrieve(
-      @Nonnull String type, @Nonnull InputStream input) {
-    if (!TYPE_DEFAULT.equals(type)) {
-      throw new UnsupportedOperationException();
-    }
+  public Observable<ProgressOrResult<Void, Throwable>> save(@Nonnull WebArchive webArchive) {
+    return Observable.error(new UnsupportedOperationException());
+  }
+
+  @Override
+  public Observable<ProgressOrResult<WebArchive, Throwable>> retrieve() {
     return Observable.create(subscriber -> {
       if (subscriber.isUnsubscribed()) {
         return;
