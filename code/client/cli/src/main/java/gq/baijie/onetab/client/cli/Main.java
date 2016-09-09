@@ -11,6 +11,7 @@ import gq.baijie.onetab.Result;
 import gq.baijie.onetab.StorageService;
 import gq.baijie.onetab.WebArchive;
 import gq.baijie.onetab.internal.storage.BasicStorageService;
+import gq.baijie.onetab.internal.storage.SqliteStorageSpi;
 import gq.baijie.onetab.internal.storage.StorageModule;
 
 public class Main implements Runnable {
@@ -19,7 +20,7 @@ public class Main implements Runnable {
 
   public Main(@Nonnull InputStream input) {
     component = DaggerMainComponent.builder()
-        .storageModule(StorageModule.from(new BasicStorageService(input)))
+        .storageModule(StorageModule.from(new BasicStorageService(input), new SqliteStorageSpi()))
         .build();
   }
 
@@ -50,9 +51,17 @@ public class Main implements Runnable {
           if (result.getResult().failed()) {
             result.getResult().cause().printStackTrace();
           } else {
-            printResult(result.getResult().result());
+            final WebArchive webArchive = result.getResult().result();
+            printResult(webArchive);
+            saveToSqliteDatabase(webArchive);
           }
         });
+  }
+
+  private void saveToSqliteDatabase(@Nonnull WebArchive webArchive) {
+    component.storageService().save(StorageService.TYPE_SQLITE, webArchive).subscribe(next->{
+      System.out.println(next);
+    });
   }
 
   private static void printResult(@Nonnull WebArchive webArchive) {

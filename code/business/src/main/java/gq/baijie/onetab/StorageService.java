@@ -7,6 +7,7 @@ import rx.Observable;
 public interface StorageService {
 
   String TYPE_DEFAULT = "default";
+  String TYPE_SQLITE = "SQLite";
 
   @Nonnull
   Observable<ProgressOrResult<Void, Throwable>> save(
