@@ -52,7 +52,8 @@ public class SqliteStorageSpi implements StorageServiceSpi {
 //    final Connection connection = DriverManager.getConnection(DATABASE_URL);
     try(final Connection connection = DriverManager.getConnection(DATABASE_URL);
         final Statement statement = connection.createStatement()) {
-//      connection.setAutoCommit(false);
+      connection.setAutoCommit(false);
+
       statement.executeUpdate("drop table if exists section");
       statement.executeUpdate("create table section (id integer PRIMARY KEY)");
       statement.executeUpdate("drop table if exists item");
@@ -60,7 +61,8 @@ public class SqliteStorageSpi implements StorageServiceSpi {
       for(WebArchive.Section section:webArchive.getSections()) {
         saveSection(section, connection);
       }
-//      connection.commit();
+
+      connection.commit();
     } catch (SQLException e) {
       e.printStackTrace();
     }
