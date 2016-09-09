@@ -13,7 +13,15 @@ import gq.baijie.onetab.WebArchive;
 import gq.baijie.onetab.internal.storage.BasicStorageService;
 import gq.baijie.onetab.internal.storage.StorageModule;
 
-public class Main {
+public class Main implements Runnable {
+
+  final MainComponent component;
+
+  public Main(@Nonnull InputStream input) {
+    component = DaggerMainComponent.builder()
+        .storageModule(StorageModule.from(new BasicStorageService(input)))
+        .build();
+  }
 
   public static void main(String[] args) {
     final Result<Configuration, Configurations.FromArgumentsFailure> config =
@@ -31,10 +39,11 @@ public class Main {
       return;
     }
 
-    final MainComponent component = DaggerMainComponent.builder()
-        .storageModule(StorageModule.from(new BasicStorageService(input)))
-        .build();
+    new Main(input).run();
+  }
 
+  @Override
+  public void run() {
     component.storageService().retrieve(StorageService.TYPE_DEFAULT)
         .filter(ProgressOrResult::isResult)
         .subscribe(result -> {
