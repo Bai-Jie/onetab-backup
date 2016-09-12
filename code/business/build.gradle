@@ -2,5 +2,6 @@ dependencies {
   compile 'com.google.code.findbugs:jsr305:3.0.1'
   compile 'com.squareup.okio:okio:1.9.0'
   compile 'io.reactivex:rxjava:1.1.10'
+  compile 'org.json:json:20160810'
   compile 'org.xerial:sqlite-jdbc:3.8.11.2'
 }

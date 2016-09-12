@@ -7,6 +7,7 @@ import rx.Observable;
 public interface StorageService {
 
   String TYPE_DEFAULT = "default";
+  String TYPE_ONE_TAB_LOCAL_STORAGE = "OneTab Local Storage";
   String TYPE_SQLITE = "SQLite";
 
   @Nonnull

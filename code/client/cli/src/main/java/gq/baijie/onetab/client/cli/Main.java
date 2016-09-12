@@ -3,6 +3,8 @@ package gq.baijie.onetab.client.cli;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -11,17 +13,22 @@ import gq.baijie.onetab.Result;
 import gq.baijie.onetab.StorageService;
 import gq.baijie.onetab.WebArchive;
 import gq.baijie.onetab.internal.storage.BasicStorageService;
+import gq.baijie.onetab.internal.storage.OneTabLocalStorageService;
 import gq.baijie.onetab.internal.storage.SqliteStorageSpi;
 import gq.baijie.onetab.internal.storage.StorageModule;
+import gq.baijie.onetab.internal.storage.StorageServiceSpi;
 
 public class Main implements Runnable {
 
+  @Nonnull
   final MainComponent component;
 
-  public Main(@Nonnull InputStream input) {
-    component = DaggerMainComponent.builder()
-        .storageModule(StorageModule.from(new BasicStorageService(input), new SqliteStorageSpi()))
-        .build();
+  @Nonnull
+  final String importType;
+
+  public Main(@Nonnull MainComponent component, @Nonnull String importType) {
+    this.component = component;
+    this.importType = importType;
   }
 
   public static void main(String[] args) {
@@ -32,20 +39,33 @@ public class Main implements Runnable {
       return;
     }
 
-    final InputStream input;
-    try {
-      input = Files.newInputStream(config.result().importFilePath);
-    } catch (IOException e) {
-      System.out.println("Cannot open open: " + e.getMessage());
-      return;
+    create(config.result()).run();
+  }
+
+  private static Main create(@Nonnull Configuration config) {
+    StorageServiceSpi importStorageSpi;
+
+    if (StorageService.TYPE_ONE_TAB_LOCAL_STORAGE.equals(config.importType)) {
+      importStorageSpi = new OneTabLocalStorageService(config.importFilePath);
+    } else {
+      try {
+        final InputStream input = Files.newInputStream(config.importFilePath);
+        importStorageSpi = new BasicStorageService(input);
+      } catch (IOException e) {
+        throw new RuntimeException("Cannot open open", e);
+      }
     }
 
-    new Main(input).run();
+    final MainComponent component = DaggerMainComponent.builder()
+        .storageModule(StorageModule.from(importStorageSpi, new SqliteStorageSpi()))
+        .build();
+
+    return new Main(component, config.importType);
   }
 
   @Override
   public void run() {
-    component.storageService().retrieve(StorageService.TYPE_DEFAULT)
+    component.storageService().retrieve(importType)
         .filter(ProgressOrResult::isResult)
         .subscribe(result -> {
           if (result.getResult().failed()) {
