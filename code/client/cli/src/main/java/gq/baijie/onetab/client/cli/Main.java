@@ -3,10 +3,10 @@ package gq.baijie.onetab.client.cli;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
@@ -19,6 +19,9 @@ import gq.baijie.onetab.internal.storage.OneTabLocalStorageService;
 import gq.baijie.onetab.internal.storage.SqliteStorageSpi;
 import gq.baijie.onetab.internal.storage.StorageModule;
 import gq.baijie.onetab.internal.storage.StorageServiceSpi;
+
+import static gq.baijie.onetab.client.cli.Main.Utils.getHost;
+
 
 public class Main implements Runnable {
 
@@ -102,14 +105,30 @@ public class Main implements Runnable {
   }
 
   private static void printSection(@Nonnull WebArchive.Section section) {
+//    section.getItems().stream().filter(it->it.getTitle().equals("gradle.org")).forEach(item -> {
+//    section.getItems().stream().filter(it -> it.getTitle().equals(getHost(it.getLink()))).forEach(item -> {
     section.getItems().forEach(item -> {
-      if (item.getTitle() != null) {
+      if (item.getTitle() != null && !item.getTitle().equals(getHost(item.getLink()))) {
         System.out.print(item.getLink() + " | ");
         System.out.println(item.getTitle());
       } else {
         System.out.println(item.getLink());
       }
     });
+  }
+
+  static class Utils {
+
+    private final static Pattern PATTERN = Pattern.compile("\\w+://([\\w.]+)/");
+
+    static String getHost(@Nonnull String link) {
+      final Matcher matcher = PATTERN.matcher(link);
+      if (matcher.find()) {
+        return matcher.group(1);
+      } else {
+        return "";
+      }
+    }
   }
 
 }
