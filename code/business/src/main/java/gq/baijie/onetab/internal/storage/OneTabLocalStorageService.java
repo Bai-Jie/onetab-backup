@@ -3,11 +3,11 @@ package gq.baijie.onetab.internal.storage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -84,7 +84,7 @@ public class OneTabLocalStorageService implements StorageServiceSpi {
 
   @Nonnull
   private JSONObject getJsonObject(@Nonnull String jsonString) {
-    return new JSONObject(jsonString);
+    return new JSONObject(jsonString);//TODO deal with UTF8 with BOM
   }
 
   private void retrieveWebArchive(
@@ -97,6 +97,8 @@ public class OneTabLocalStorageService implements StorageServiceSpi {
 
   private void retrieveSection(
       @Nonnull JSONObject json, @Nonnull WebArchive.SectionBuilder builder) {
+    builder.setId(json.get("id").toString());
+    builder.setCreateDate(new Date(json.getLong("createDate")));
     final JSONArray tabsMeta = json.getJSONArray("tabsMeta");
     for (int i = 0; i < tabsMeta.length(); i++) {
       retrieveItem(tabsMeta.getJSONObject(i), builder.item());
@@ -104,6 +106,7 @@ public class OneTabLocalStorageService implements StorageServiceSpi {
   }
 
   private void retrieveItem(@Nonnull JSONObject json, @Nonnull WebArchive.ItemBuilder builder) {
+    builder.setId(json.get("id").toString());
     builder.setLink(json.getString("url"));
     builder.setTitle(json.getString("title"));//TODO no title
   }

@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.annotation.Nonnull;
 
@@ -88,6 +90,10 @@ public class Main implements Runnable {
     if (webArchive.getSections().isEmpty()) {
       return;
     }
+    Collections.sort(
+        webArchive.getSections(),
+        Comparator.comparing(WebArchive.Section::getCreateDate).reversed()
+    );
     printSection(webArchive.getSections().get(0));
     webArchive.getSections().stream().skip(1).forEach(section -> {
       System.out.println();
