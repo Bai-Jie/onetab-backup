@@ -4,6 +4,7 @@ def javaProjects = []
 
 javaProjects << 'business'
 javaProjects << 'client:cli'
+javaProjects << 'client:javafx'
 
 project(javaProjects) {
     apply plugin: 'java'

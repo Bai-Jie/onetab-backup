@@ -2,3 +2,4 @@ rootProject.name = 'onetab'
 
 include 'business'
 include 'client:cli'
+include 'client:javafx'
