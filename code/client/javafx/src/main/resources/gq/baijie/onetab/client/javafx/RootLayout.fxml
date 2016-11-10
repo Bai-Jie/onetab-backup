@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.BorderPane?>
 
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.92" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.92" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gq.baijie.onetab.client.javafx.WebArchivePresenter">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -31,10 +31,10 @@
       </MenuBar>
    </top>
    <center>
-      <TreeTableView prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+      <TreeTableView fx:id="webArchiveTreeTableView" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
         <columns>
-          <TreeTableColumn prefWidth="75.0" text="Link" />
-          <TreeTableColumn prefWidth="75.0" text="Title" />
+          <TreeTableColumn fx:id="linkTreeTableColumn" prefWidth="75.0" text="Link" />
+          <TreeTableColumn fx:id="titleTreeTableColumn" prefWidth="75.0" text="Title" />
         </columns>
       </TreeTableView>
    </center>

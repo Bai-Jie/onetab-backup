@@ -1,9 +1,11 @@
 package gq.baijie.onetab.client.javafx;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.annotation.Nullable;
 
+import gq.baijie.onetab.WebArchive;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,30 +14,63 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+  private static final WebArchive SAMPLE_DATA;
+  static {
+    final WebArchive.WebArchiveBuilder builder = WebArchive.builder();
+    WebArchive.SectionBuilder sectionBuilder;
+    sectionBuilder = builder.section().setCreateDate(new Date()).setId("1");
+    sectionBuilder.item().setLink("https://1.1").setTitle("1.1").setId("1.1");
+    sectionBuilder.item().setLink("https://1.2").setTitle("1.2").setId("1.2");
+
+    sectionBuilder = builder.section().setCreateDate(new Date()).setId("2");
+    sectionBuilder.item().setLink("https://2.1").setTitle("2.1").setId("2.1");
+    sectionBuilder.item().setLink("http://2.2").setTitle("2.2").setId("2.2");
+    sectionBuilder.item().setLink("https://2.3").setTitle("2.3").setId("2.3");
+
+    sectionBuilder = builder.section().setCreateDate(new Date()).setId("3");
+    sectionBuilder.item().setLink("https://3.1").setTitle("3.1").setId("3.1");
+    SAMPLE_DATA = builder.build();
+  }
+
   public static void main(String[] args) {
     launch(args);
   }
 
   @Override
   public void start(Stage primaryStage) {
-    final Scene scene = createScene();
+    final Pair<Scene, WebArchivePresenter> scene = createScene();
     if (scene != null) {
-      primaryStage.setScene(scene);
+      scene.b.setWebArchive(SAMPLE_DATA);
+      primaryStage.setScene(scene.a);
     }
     primaryStage.setTitle("OneTab Backup");
     primaryStage.show();
   }
 
   @Nullable
-  private Scene createScene() {
+  private Pair<Scene, WebArchivePresenter> createScene() {
     try {
       final FXMLLoader fxmlLoader = new FXMLLoader();
       fxmlLoader.setLocation(Main.class.getResource("RootLayout.fxml"));
       BorderPane rootLayout = fxmlLoader.load();
-      return new Scene(rootLayout);
+      return Pair.of(new Scene(rootLayout), fxmlLoader.getController());
     } catch (IOException e) {
       e.printStackTrace();
       return null;
+    }
+  }
+
+  private static class Pair<A, B> {
+    final A a;
+    final B b;
+
+    private Pair(A a, B b) {
+      this.a = a;
+      this.b = b;
+    }
+
+    static <A, B> Pair<A, B> of(A a, B b) {
+      return new Pair<>(a, b);
     }
   }
 
