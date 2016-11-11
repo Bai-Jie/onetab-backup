@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class WebArchive {
 
@@ -26,8 +27,20 @@ public class WebArchive {
 
   public static class Section {
 
+    /**
+     * when import
+     * <ul>
+     *   <li>{@link StorageService#TYPE_ONE_TAB_LOCAL_STORAGE} have this</li>
+     *   <li>{@link StorageService#TYPE_DEFAULT} don't have this</li>
+     * </ul>
+     */
+    @Nullable
     private String id;
 
+    /**
+     * @see #id
+     */
+    @Nullable
     private Date createDate;
 
     private List<Item> items;
@@ -63,6 +76,10 @@ public class WebArchive {
 
   public static class Item {
 
+    /**
+     * @see Section#id
+     */
+    @Nullable
     private String id;
     private String link;
     private String title;
