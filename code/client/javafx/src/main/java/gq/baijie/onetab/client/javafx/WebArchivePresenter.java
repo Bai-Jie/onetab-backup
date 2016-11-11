@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import gq.baijie.onetab.WebArchive;
+import gq.baijie.onetab.client.javafx.eventbus.LoadWebArchiveEvent;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -80,7 +81,8 @@ public class WebArchivePresenter {
 
     final Optional<Pair<String, String>> result = dialog.showAndWait();
     result.ifPresent(r -> {
-      main.getController().emitEvent(new Controller.LoadWebArchiveEvent(r.getKey(), r.getValue()));
+      main.getMainComponent().eventBus()
+          .emitEvent(new LoadWebArchiveEvent(r.getKey(), r.getValue()));
     });
   }
 

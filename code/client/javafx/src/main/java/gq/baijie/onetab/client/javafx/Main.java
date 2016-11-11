@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-  private final Controller controller;
+  final MainComponent mainComponent;
 
   private Stage primaryStage;
 
@@ -37,8 +37,8 @@ public class Main extends Application {
   }
 
   {
-    final MainComponent component = DaggerMainComponent.create();
-    controller = component.newController();
+    mainComponent = DaggerMainComponent.create();
+    mainComponent.controller();
   }
 
   public static void main(String[] args) {
@@ -77,8 +77,8 @@ public class Main extends Application {
     return primaryStage;
   }
 
-  public Controller getController() {
-    return controller;
+  public MainComponent getMainComponent() {
+    return mainComponent;
   }
 
   private static class Pair<A, B> {

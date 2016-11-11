@@ -8,29 +8,28 @@ import javax.inject.Singleton;
 import gq.baijie.onetab.ProgressOrResult;
 import gq.baijie.onetab.StorageService;
 import gq.baijie.onetab.WebArchive;
-import rx.subjects.PublishSubject;
+import gq.baijie.onetab.client.javafx.eventbus.EventBus;
+import gq.baijie.onetab.client.javafx.eventbus.LoadWebArchiveEvent;
 
 @Singleton
 public class Controller {
 
-  private final PublishSubject<Event> eventBus = PublishSubject.create();
+  private final EventBus eventBus;
 
   private final StorageService storageService;
 
-  { // init
-    eventBus
+  @Inject
+  public Controller(EventBus eventBus, StorageService storageService) {
+    this.eventBus = eventBus;
+    this.storageService = storageService;
+    init();
+  }
+
+  private void init() {
+    eventBus.events()
         .filter(event -> event instanceof LoadWebArchiveEvent)
         .cast(LoadWebArchiveEvent.class)
         .subscribe(this::onReceiveLoadWebArchiveEvent);
-  }
-
-  @Inject
-  public Controller(StorageService storageService) {
-    this.storageService = storageService;
-  }
-
-  public void emitEvent(Event event) {
-    eventBus.onNext(event);
   }
 
   private void onReceiveLoadWebArchiveEvent(LoadWebArchiveEvent event) {
@@ -46,20 +45,6 @@ public class Controller {
             System.out.println(webArchive);//TODO show it in UI
           }
         });
-  }
-
-  public interface Event {
-
-  }
-
-  public static class LoadWebArchiveEvent implements Event {
-    public final String path;
-    public final String type;
-
-    public LoadWebArchiveEvent(String path, String type) {
-      this.path = path;
-      this.type = type;
-    }
   }
 
 }
