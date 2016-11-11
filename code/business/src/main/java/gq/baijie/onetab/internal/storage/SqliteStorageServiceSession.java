@@ -1,5 +1,6 @@
 package gq.baijie.onetab.internal.storage;
 
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,7 +21,18 @@ import static gq.baijie.onetab.StorageService.TYPE_SQLITE;
 
 public class SqliteStorageServiceSession implements StorageServiceSession {
 
-  private static final String DATABASE_URL = "jdbc:sqlite:sample.db";
+  private static final String DATABASE_URL_PREFIX = "jdbc:sqlite:";
+
+  @Nonnull
+  private final String databaseUrl;
+
+  @Nonnull
+  private final Path path;
+
+  public SqliteStorageServiceSession(@Nonnull Path path) {
+    this.path = path;
+    databaseUrl = DATABASE_URL_PREFIX + path;
+  }
 
   @Nonnull
   @Override
@@ -50,8 +62,7 @@ public class SqliteStorageServiceSession implements StorageServiceSession {
   }
 
   private void doSave(@Nonnull WebArchive webArchive) {
-//    final Connection connection = DriverManager.getConnection(DATABASE_URL);
-    try(final Connection connection = DriverManager.getConnection(DATABASE_URL);
+    try(final Connection connection = DriverManager.getConnection(databaseUrl);
         final Statement statement = connection.createStatement()) {
       connection.setAutoCommit(false);
 

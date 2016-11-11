@@ -18,7 +18,7 @@ public class SqliteStorageSpi implements StorageServiceSpi {
 
   @Override
   public StorageServiceSession open(@Nonnull Path path) {
-    return new SqliteStorageServiceSession();//TODO use path
+    return new SqliteStorageServiceSession(path);
   }
 
 }

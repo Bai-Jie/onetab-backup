@@ -1,5 +1,6 @@
 package gq.baijie.onetab.client.cli;
 
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,9 +65,10 @@ public class Main implements Runnable {
   }
 
   private void saveToSqliteDatabase(@Nonnull WebArchive webArchive) {
-    component.storageService().open(TYPE_SQLITE, null).save(webArchive).subscribe(next -> {
-//      System.out.println(next);
-    });
+    component.storageService().open(TYPE_SQLITE, Paths.get("sample.db")).save(webArchive).subscribe(
+        next -> {
+//          System.out.println(next);
+        });
   }
 
   private static void printResult(@Nonnull WebArchive webArchive) {
