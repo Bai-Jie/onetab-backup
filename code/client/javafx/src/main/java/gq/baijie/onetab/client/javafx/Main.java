@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+  private Stage primaryStage;
+
   private static final WebArchive SAMPLE_DATA;
   static {
     final WebArchive.WebArchiveBuilder builder = WebArchive.builder();
@@ -38,6 +40,8 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) {
+    this.primaryStage = primaryStage;
+
     final Pair<Scene, WebArchivePresenter> scene = createScene();
     if (scene != null) {
       scene.b.setWebArchive(SAMPLE_DATA);
@@ -53,11 +57,17 @@ public class Main extends Application {
       final FXMLLoader fxmlLoader = new FXMLLoader();
       fxmlLoader.setLocation(Main.class.getResource("RootLayout.fxml"));
       BorderPane rootLayout = fxmlLoader.load();
-      return Pair.of(new Scene(rootLayout), fxmlLoader.getController());
+      final WebArchivePresenter controller = fxmlLoader.getController();
+      controller.bind(this);
+      return Pair.of(new Scene(rootLayout), controller);
     } catch (IOException e) {
       e.printStackTrace();
       return null;
     }
+  }
+
+  public Stage getPrimaryStage() {
+    return primaryStage;
   }
 
   private static class Pair<A, B> {
