@@ -1,7 +1,6 @@
 package gq.baijie.onetab.client.cli;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +12,8 @@ import gq.baijie.onetab.WebArchive;
 
 import static gq.baijie.onetab.StorageService.TYPE_SQLITE;
 import static gq.baijie.onetab.client.cli.Main.Utils.getHost;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.nullsFirst;
 
 
 public class Main implements Runnable {
@@ -74,7 +75,7 @@ public class Main implements Runnable {
     }
     Collections.sort(
         webArchive.getSections(),
-        Comparator.comparing(WebArchive.Section::getCreateDate).reversed()
+        comparing(WebArchive.Section::getCreateDate, nullsFirst(comparing(o -> o))).reversed()
     );
     printSection(webArchive.getSections().get(0));
     webArchive.getSections().stream().skip(1).forEach(section -> {
