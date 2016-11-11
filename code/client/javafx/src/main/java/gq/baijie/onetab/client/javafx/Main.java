@@ -1,11 +1,10 @@
 package gq.baijie.onetab.client.javafx;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.annotation.Nullable;
 
-import gq.baijie.onetab.WebArchive;
+import gq.baijie.onetab.client.javafx.eventbus.ShowWebArchiveEvent;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,27 +13,11 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-  final MainComponent mainComponent;
+  private final MainComponent mainComponent;
 
   private Stage primaryStage;
 
-  private static final WebArchive SAMPLE_DATA;
-  static {
-    final WebArchive.WebArchiveBuilder builder = WebArchive.builder();
-    WebArchive.SectionBuilder sectionBuilder;
-    sectionBuilder = builder.section().setCreateDate(new Date()).setId("1");
-    sectionBuilder.item().setLink("https://1.1").setTitle("1.1").setId("1.1");
-    sectionBuilder.item().setLink("https://1.2").setTitle("1.2").setId("1.2");
-
-    sectionBuilder = builder.section().setCreateDate(new Date()).setId("2");
-    sectionBuilder.item().setLink("https://2.1").setTitle("2.1").setId("2.1");
-    sectionBuilder.item().setLink("http://2.2").setTitle("2.2").setId("2.2");
-    sectionBuilder.item().setLink("https://2.3").setTitle("2.3").setId("2.3");
-
-    sectionBuilder = builder.section().setCreateDate(new Date()).setId("3");
-    sectionBuilder.item().setLink("https://3.1").setTitle("3.1").setId("3.1");
-    SAMPLE_DATA = builder.build();
-  }
+  private WebArchivePresenter webArchivePresenter;
 
   {
     mainComponent = DaggerMainComponent.create();
@@ -45,17 +28,31 @@ public class Main extends Application {
     launch(args);
   }
 
+  private void receiveEvents() {
+    mainComponent.eventBus().events()
+        .filter(e -> e instanceof ShowWebArchiveEvent)
+        .cast(ShowWebArchiveEvent.class)
+        .subscribe(e -> {
+          if (webArchivePresenter != null) {
+            webArchivePresenter.setWebArchive(e.webArchive);
+          }
+        });
+  }
+
   @Override
   public void start(Stage primaryStage) {
+    receiveEvents();
+
     this.primaryStage = primaryStage;
 
     final Pair<Scene, WebArchivePresenter> scene = createScene();
     if (scene != null) {
-      scene.b.setWebArchive(SAMPLE_DATA);
+      webArchivePresenter = scene.b;
       primaryStage.setScene(scene.a);
     }
     primaryStage.setTitle("OneTab Backup");
     primaryStage.show();
+
   }
 
   @Nullable
@@ -82,6 +79,7 @@ public class Main extends Application {
   }
 
   private static class Pair<A, B> {
+
     final A a;
     final B b;
 

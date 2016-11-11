@@ -48,7 +48,7 @@ public class WebArchivePresenter {
         new TreeItem<>(new WebArchive.ItemBuilder().setLink("Sections").build());
     webArchive.getSections().forEach(section -> {
       final TreeItem<WebArchive.Item> sectionItem = new TreeItem<>(
-          new WebArchive.ItemBuilder().setLink(section.getCreateDate().toString()).build());
+          new WebArchive.ItemBuilder().setLink(String.valueOf(section.getCreateDate())).build());
       section.getItems().forEach(item -> {
         sectionItem.getChildren().add(new TreeItem<>(item));
       });

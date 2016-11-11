@@ -10,6 +10,7 @@ import gq.baijie.onetab.StorageService;
 import gq.baijie.onetab.WebArchive;
 import gq.baijie.onetab.client.javafx.eventbus.EventBus;
 import gq.baijie.onetab.client.javafx.eventbus.LoadWebArchiveEvent;
+import gq.baijie.onetab.client.javafx.eventbus.ShowWebArchiveEvent;
 
 @Singleton
 public class Controller {
@@ -42,7 +43,7 @@ public class Controller {
             result.getResult().cause().printStackTrace();
           } else {
             final WebArchive webArchive = result.getResult().result();
-            System.out.println(webArchive);//TODO show it in UI
+            eventBus.emitEvent(new ShowWebArchiveEvent(webArchive));
           }
         });
   }
