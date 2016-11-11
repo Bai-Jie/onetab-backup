@@ -34,8 +34,6 @@ public class Controller {
   }
 
   private void onReceiveLoadWebArchiveEvent(LoadWebArchiveEvent event) {
-    System.out.println("received LoadWebArchiveEvent");
-    System.out.printf("path: %s, type: %s%n", event.path, event.type);
     storageService.open(event.type, Paths.get(event.path)).retrieve()
         .filter(ProgressOrResult::isResult)
         .subscribe(result -> {
