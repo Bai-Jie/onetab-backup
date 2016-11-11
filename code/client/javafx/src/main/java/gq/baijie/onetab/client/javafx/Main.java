@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+  private final Controller controller;
+
   private Stage primaryStage;
 
   private static final WebArchive SAMPLE_DATA;
@@ -32,6 +34,11 @@ public class Main extends Application {
     sectionBuilder = builder.section().setCreateDate(new Date()).setId("3");
     sectionBuilder.item().setLink("https://3.1").setTitle("3.1").setId("3.1");
     SAMPLE_DATA = builder.build();
+  }
+
+  {
+    final MainComponent component = DaggerMainComponent.create();
+    controller = component.newController();
   }
 
   public static void main(String[] args) {
@@ -68,6 +75,10 @@ public class Main extends Application {
 
   public Stage getPrimaryStage() {
     return primaryStage;
+  }
+
+  public Controller getController() {
+    return controller;
   }
 
   private static class Pair<A, B> {

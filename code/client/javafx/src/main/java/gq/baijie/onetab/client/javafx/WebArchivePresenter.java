@@ -79,7 +79,9 @@ public class WebArchivePresenter {
     });
 
     final Optional<Pair<String, String>> result = dialog.showAndWait();
-    result.ifPresent(System.out::println);//TODO open business
+    result.ifPresent(r -> {
+      main.getController().emitEvent(new Controller.LoadWebArchiveEvent(r.getKey(), r.getValue()));
+    });
   }
 
   @Nullable
