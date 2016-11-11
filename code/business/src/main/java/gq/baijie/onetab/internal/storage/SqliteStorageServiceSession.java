@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -67,9 +68,9 @@ public class SqliteStorageServiceSession implements StorageServiceSession {
       connection.setAutoCommit(false);
 
       statement.executeUpdate("drop table if exists section");
-      statement.executeUpdate("create table section (id integer PRIMARY KEY)");
+      statement.executeUpdate("create table section (storage_id integer PRIMARY KEY, id string, create_date integer DEFAULT NULL)");
       statement.executeUpdate("drop table if exists item");
-      statement.executeUpdate("create table item (id integer PRIMARY KEY, section_id integer, link string, title string)");;
+      statement.executeUpdate("create table item (storage_id integer PRIMARY KEY, section_storage_id integer, id string, link string, title string)");;
       for(WebArchive.Section section:webArchive.getSections()) {
         saveSection(section, connection);
       }
@@ -80,11 +81,16 @@ public class SqliteStorageServiceSession implements StorageServiceSession {
     }
   }
 
-  private void saveSection(@Nonnull WebArchive.Section section, @Nonnull Connection connection)
+  private static void saveSection(@Nonnull WebArchive.Section section, @Nonnull Connection connection)
       throws SQLException {
     try(final PreparedStatement statement = connection.prepareStatement(
-//        "insert into section () values ()", Statement.RETURN_GENERATED_KEYS)) {
-        "insert into section DEFAULT VALUES", Statement.RETURN_GENERATED_KEYS)) {
+        "insert into section (id, create_date) values (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+      statement.setString(1, section.getId());
+      if (section.getCreateDate() == null) {
+        statement.setNull(2, Types.INTEGER);
+      } else {
+        statement.setLong(2, section.getCreateDate().getTime());
+      }
       statement.executeUpdate();
       final ResultSet generatedKeys = statement.getGeneratedKeys();
       if (generatedKeys.next()) {
@@ -96,15 +102,16 @@ public class SqliteStorageServiceSession implements StorageServiceSession {
     }
   }
 
-  private void saveItems(
+  private static void saveItems(
       long sectionId, @Nonnull List<WebArchive.Item> items, @Nonnull Connection connection)
       throws SQLException {
     try(final PreparedStatement statement = connection.prepareStatement(
-        "insert into item (section_id, link, title) values (?, ?, ?)")) {
+        "insert into item (section_storage_id, id, link, title) values (?, ?, ?, ?)")) {
       statement.setLong(1, sectionId);
       for(WebArchive.Item item: items){
-        statement.setString(2, item.getLink());
-        statement.setString(3, item.getTitle());
+        statement.setString(2, item.getId());
+        statement.setString(3, item.getLink());
+        statement.setString(4, item.getTitle());
         statement.executeUpdate();
       }
     }
