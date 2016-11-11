@@ -11,19 +11,20 @@ import javax.annotation.Nonnull;
 import gq.baijie.onetab.ProgressOrResult;
 import gq.baijie.onetab.Result;
 import gq.baijie.onetab.Results;
+import gq.baijie.onetab.StorageServiceSession;
 import gq.baijie.onetab.WebArchive;
 import rx.Observable;
 
 import static gq.baijie.onetab.StorageService.TYPE_DEFAULT;
 
-public class BasicStorageService implements StorageServiceSpi {
+public class BasicStorageServiceSession implements StorageServiceSession {
 
   private static final String DEFAULT_CHARSET = "utf-8";
 
   @Nonnull
   private final InputStream input;
 
-  public BasicStorageService(@Nonnull InputStream input) {
+  public BasicStorageServiceSession(@Nonnull InputStream input) {
     this.input = input;
   }
 

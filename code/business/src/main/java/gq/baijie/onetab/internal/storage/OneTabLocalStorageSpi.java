@@ -6,19 +6,19 @@ import javax.annotation.Nonnull;
 
 import gq.baijie.onetab.StorageServiceSession;
 
-import static gq.baijie.onetab.StorageService.TYPE_SQLITE;
+import static gq.baijie.onetab.StorageService.TYPE_ONE_TAB_LOCAL_STORAGE;
 
-public class SqliteStorageSpi implements StorageServiceSpi {
+public class OneTabLocalStorageSpi implements StorageServiceSpi {
 
   @Nonnull
   @Override
   public String getType() {
-    return TYPE_SQLITE;
+    return TYPE_ONE_TAB_LOCAL_STORAGE;
   }
 
   @Override
   public StorageServiceSession open(@Nonnull Path path) {
-    return new SqliteStorageServiceSession();//TODO use path
+    return new OneTabLocalStorageServiceSession(path);
   }
 
 }

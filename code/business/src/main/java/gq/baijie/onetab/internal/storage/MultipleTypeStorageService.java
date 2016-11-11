@@ -1,11 +1,14 @@
 package gq.baijie.onetab.internal.storage;
 
+import java.nio.file.Path;
+
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import gq.baijie.onetab.ProgressOrResult;
 import gq.baijie.onetab.StorageService;
+import gq.baijie.onetab.StorageServiceSession;
 import gq.baijie.onetab.WebArchive;
 import rx.Observable;
 
@@ -20,22 +23,12 @@ public class MultipleTypeStorageService implements StorageService {
   }
 
   @Override
-  public Observable<ProgressOrResult<Void, Throwable>> save(
-      @Nonnull String type, @Nonnull WebArchive webArchive) {
+  public StorageServiceSession open(@Nonnull String type, @Nonnull Path path) {
     final StorageServiceSpi spi = register.getSpi(type);
     if (spi == null) {
-      return Observable.error(new UnsupportedOperationException("unknown type: " + type));
+      throw new UnsupportedOperationException("unknown type: " + type);
     }
-    return spi.save(webArchive);
-  }
-
-  @Override
-  public Observable<ProgressOrResult<WebArchive, Throwable>> retrieve(@Nonnull String type) {
-    final StorageServiceSpi spi = register.getSpi(type);
-    if (spi == null) {
-      return Observable.error(new UnsupportedOperationException("unknown type: " + type));
-    }
-    return spi.retrieve();
+    return spi.open(path);
   }
 
 }

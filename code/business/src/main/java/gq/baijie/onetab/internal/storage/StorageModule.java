@@ -9,12 +9,10 @@ public class StorageModule {
 
   private final StorageServiceRegister register = new StorageServiceRegister();
 
-  public static StorageModule from(StorageServiceSpi... spis) {
-    StorageModule module = new StorageModule();
-    for (StorageServiceSpi spi : spis) {
-      module.register.register(spi);
-    }
-    return module;
+  { // init
+    register.register(new BasicStorageSpi());
+    register.register(new OneTabLocalStorageSpi());
+    register.register(new SqliteStorageSpi());
   }
 
   @Provides

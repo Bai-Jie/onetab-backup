@@ -14,19 +14,20 @@ import javax.annotation.Nonnull;
 
 import gq.baijie.onetab.ProgressOrResult;
 import gq.baijie.onetab.Results;
+import gq.baijie.onetab.StorageServiceSession;
 import gq.baijie.onetab.WebArchive;
 import rx.Observable;
 
 import static gq.baijie.onetab.StorageService.TYPE_ONE_TAB_LOCAL_STORAGE;
 
-public class OneTabLocalStorageService implements StorageServiceSpi {
+public class OneTabLocalStorageServiceSession implements StorageServiceSession {
 
   private static final String DEFAULT_CHARSET = "utf-8";
 
   @Nonnull
   private final Path path;
 
-  public OneTabLocalStorageService(@Nonnull Path path) {
+  public OneTabLocalStorageServiceSession(@Nonnull Path path) {
     this.path = path;
   }
 

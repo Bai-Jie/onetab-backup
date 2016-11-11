@@ -1,8 +1,5 @@
 package gq.baijie.onetab.client.cli;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
@@ -12,14 +9,9 @@ import javax.annotation.Nonnull;
 
 import gq.baijie.onetab.ProgressOrResult;
 import gq.baijie.onetab.Result;
-import gq.baijie.onetab.StorageService;
 import gq.baijie.onetab.WebArchive;
-import gq.baijie.onetab.internal.storage.BasicStorageService;
-import gq.baijie.onetab.internal.storage.OneTabLocalStorageService;
-import gq.baijie.onetab.internal.storage.SqliteStorageSpi;
-import gq.baijie.onetab.internal.storage.StorageModule;
-import gq.baijie.onetab.internal.storage.StorageServiceSpi;
 
+import static gq.baijie.onetab.StorageService.TYPE_SQLITE;
 import static gq.baijie.onetab.client.cli.Main.Utils.getHost;
 
 
@@ -29,11 +21,11 @@ public class Main implements Runnable {
   final MainComponent component;
 
   @Nonnull
-  final String importType;
+  final Configuration configuration;
 
-  public Main(@Nonnull MainComponent component, @Nonnull String importType) {
+  public Main(@Nonnull MainComponent component, @Nonnull Configuration configuration) {
     this.component = component;
-    this.importType = importType;
+    this.configuration = configuration;
   }
 
   public static void main(String[] args) {
@@ -48,29 +40,16 @@ public class Main implements Runnable {
   }
 
   private static Main create(@Nonnull Configuration config) {
-    StorageServiceSpi importStorageSpi;
-
-    if (StorageService.TYPE_ONE_TAB_LOCAL_STORAGE.equals(config.importType)) {
-      importStorageSpi = new OneTabLocalStorageService(config.importFilePath);
-    } else {
-      try {
-        final InputStream input = Files.newInputStream(config.importFilePath);
-        importStorageSpi = new BasicStorageService(input);
-      } catch (IOException e) {
-        throw new RuntimeException("Cannot open open", e);
-      }
-    }
-
     final MainComponent component = DaggerMainComponent.builder()
-        .storageModule(StorageModule.from(importStorageSpi, new SqliteStorageSpi()))
         .build();
 
-    return new Main(component, config.importType);
+    return new Main(component, config);
   }
 
   @Override
   public void run() {
-    component.storageService().retrieve(importType)
+    component.storageService().open(configuration.importType, configuration.importFilePath)
+        .retrieve()
         .filter(ProgressOrResult::isResult)
         .subscribe(result -> {
           if (result.getResult().failed()) {
@@ -84,8 +63,8 @@ public class Main implements Runnable {
   }
 
   private void saveToSqliteDatabase(@Nonnull WebArchive webArchive) {
-    component.storageService().save(StorageService.TYPE_SQLITE, webArchive).subscribe(next->{
-      System.out.println(next);
+    component.storageService().open(TYPE_SQLITE, null).save(webArchive).subscribe(next -> {
+//      System.out.println(next);
     });
   }
 

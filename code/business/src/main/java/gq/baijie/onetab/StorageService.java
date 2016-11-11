@@ -1,8 +1,8 @@
 package gq.baijie.onetab;
 
-import javax.annotation.Nonnull;
+import java.nio.file.Path;
 
-import rx.Observable;
+import javax.annotation.Nonnull;
 
 public interface StorageService {
 
@@ -10,11 +10,6 @@ public interface StorageService {
   String TYPE_ONE_TAB_LOCAL_STORAGE = "OneTab Local Storage";
   String TYPE_SQLITE = "SQLite";
 
-  @Nonnull
-  Observable<ProgressOrResult<Void, Throwable>> save(
-      @Nonnull String type, @Nonnull WebArchive webArchive);
-
-  @Nonnull
-  Observable<ProgressOrResult<WebArchive, Throwable>> retrieve(@Nonnull String type);
+  StorageServiceSession open(@Nonnull String type, @Nonnull Path path);
 
 }
